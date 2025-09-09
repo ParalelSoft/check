@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heactiven | Дизайн и аватарки</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        dark: '#1f2937',
+                        light: '#f9fafb',
+                        darkBg: '#0a0a1a',
+                        cardDark: '#13132e'
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --text-primary: #f1f5f9;
+            --bg-primary: #0a0a1a;
+            --bg-secondary: #13132e;
+            --card-bg: rgba(31, 41, 55, 0.5);
+            --card-border: #374151;
+            --gradient-start: #6366f1;
+            --gradient-end: #8b5cf6;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            position: relative;
+            overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        
+        /* OLED Theme (Default) */
+        body[data-theme="oled"] {
+            --text-primary: #f1f5f9;
+            --bg-primary: #0a0a1a;
+            --bg-secondary: #13132e;
+            --card-bg: rgba(19, 19, 46, 0.8);
+            --card-border: #222222;
+        }
+        
+        /* Purple Theme */
+        body[data-theme="purple"] {
+            --text-primary: #f1f5f9;
+            --bg-primary: #0f0e17;
+            --bg-secondary: #1e1b2e;
+            --card-bg: rgba(76, 29, 149, 0.7);
+            --card-border: #7c3aed;
+        }
+
+        /* Backgrounds */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -3;
+            overflow: hidden;
+        }
+        
+        /* Starry Background for OLED theme */
+        .starry-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #0a0a1a, #000000);
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+        
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0.7;
+        }
+        
+        /* Black Hole Background for Purple theme */
+        .blackhole-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #0f0e17, #000000);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .black-hole {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80vmin;
+            height: 80vmin;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, #000000 0%, #000000 40%, #33006d 70%, #4c00ff 100%);
+            box-shadow: 0 0 100px 20px rgba(76, 0, 255, 0.7),
+                        0 0 200px 40px rgba(76, 0, 255, 0.5),
+                        0 0 300px 60px rgba(76, 0, 255, 0.3);
+        }
+        
+        .accretion-disk {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotateX(75deg);
+            width: 120vmin;
+            height: 40vmin;
+            border-radius: 50%;
+            background: linear-gradient(to right, 
+                transparent, 
+                rgba(101, 0, 209, 0.8), 
+                rgba(76, 0, 255, 0.9), 
+                rgba(101, 0, 209, 0.8), 
+                transparent);
+            filter: blur(5px);
+        }
+        
+        body[data-theme="oled"] .starry-bg {
+            opacity: 1;
+        }
+        
+        body[data-theme="oled"] .blackhole-bg {
+            opacity: 0;
+        }
+        
+        body[data-theme="purple"] .starry-bg {
+            opacity: 0;
+        }
+        
+        body[data-theme="purple"] .blackhole-bg {
+            opacity: 1;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .theme-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: 50px;
+            padding: 5px;
+            display: flex;
+            gap: 5px;
+        }
+        
+        .theme-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-btn.active {
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+        
+        .theme-btn.oled {
+            background: linear-gradient(135deg, #0a0a1a, #13132e);
+            color: white;
+        }
+        
+        .theme-btn.purple {
+            background: linear-gradient(135deg, #4c1d95, #5b21b6);
+            color: white;
+        }
+        
+        .nav-dots {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+        }
+        
+        .dot {
+            display: block;
+            width: 12px;
+            height: 12px;
+            margin: 12px 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            transition: all 0.3s ease;
+        }
+        
+        .dot.active {
+            background: var(--primary);
+            transform: scale(1.4);
+        }
+        
+        .section {
+            scroll-margin-top: 80px;
+        }
+        
+        .counter-number {
+            font-weight: bold;
+            color: var(--primary);
+            transition: all 0.5s ease;
+        }
+        
+        .counter-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 12px 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-dots {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Background Container -->
+    <div class="background-container">
+        <div class="starry-bg">
+            <div class="stars" id="stars"></div>
+        </div>
+        <div class="blackhole-bg">
+            <div class="accretion-disk"></div>
+            <div class="black-hole"></div>
+        </div>
+    </div>
+    
+    <!-- Theme Switcher -->
+    <div class="theme-switcher">
+        <button class="theme-btn oled active" data-theme="oled" title="OLED тема">
+            <i class="fas fa-moon"></i>
+        </button>
+        <button class="theme-btn purple" data-theme="purple" title="Фиолетовая тема">
+            <i class="fas fa-palette"></i>
+        </button>
+    </div>
+    
+    <!-- Navigation Dots -->
+    <div class="nav-dots">
+        <a href="#hero" class="dot active" data-section="hero"></a>
+        <a href="#about" class="dot" data-section="about"></a>
+        <a href="#platforms" class="dot" data-section="platforms"></a>
+        <a href="#contact" class="dot" data-section="contact"></a>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="hero" class="section relative py-20 px-4 md:px-8 overflow-hidden">
+        <div class="container mx-auto max-w-6xl relative z-10">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="w-full md:w-1/2 mb-10 md:mb-0">
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                        <span class="gradient-text">Heactiven</span>
+                    </h1>
+                    <p class="text-xl mb-8 leading-relaxed">
+                        Занимаюсь дизайном, делаю аватарки людям бесплатно, так же через время возможно они будут платными (не планируется пока-что)
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#contact" class="px-6 py-3 bg-gradient-to-r from-primary to-secondary rounded-lg font-medium hover:opacity-90 transition-all">
+                            Связаться
+                        </a>
+                        <a href="#about" class="px-6 py-3 border border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-white transition-all">
+                            Обо мне
+                        </a>
+                    </div>
+                </div>
+                                
+                <div class="w-full md:w-2/5 flex justify-center">
+                    <div class="relative">
+                        <div class="absolute -inset-4 bg-gradient-to-r from-primary to-secondary rounded-2xl blur opacity-30 animate-float"></div>
+                        <img src="https://i.postimg.cc/xCrwdMwB/IMG-20250813-002552-399.jpg"
+                              alt="Heactiven"
+                              class="relative rounded-2xl shadow-2xl w-full max-w-md">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section py-20 px-4 md:px-8">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-16">
+                Мои <span class="gradient-text">услуги</span>
+            </h2>
+                        
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Shop Card -->
+                <div class="bg-cardDark backdrop-blur-sm rounded-xl p-6 card-hover border border-gray-700">
+                    <div class="w-14 h-14 bg-primary/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-store text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Цифровой магазин</h3>
+                    <p class="mb-4 text-gray-300">Телеграм магазин с цифровыми товарами и услугами. Гарантия качества и быстрая доставка.</p>
+                    <a href="https://t.me/Heactiven_shop" target="_blank" class="inline-flex items-center text-primary hover:text-secondary transition-colors">
+                        Перейти в магазин
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                                
+                <!-- Quality Card -->
+                <div class="bg-cardDark backdrop-blur-sm rounded-xl p-6 card-hover border border-gray-700">
+                    <div class="w-14 h-14 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-award text-2xl text-purple-500"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Гарантия качества</h3>
+                    <p class="mb-4 text-gray-300">Множество положительных отзывов и проверенная репутация на различных площадках.</p>
+                    <a href="https://t.me/otzivi_Heactiven" target="_blank" class="inline-flex items-center text-purple-500 hover:text-purple-400 transition-colors">
+                        Посмотреть отзывы
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Platforms Section -->
+    <section id="platforms" class="section py-20 px-4 md:px-8">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-16">
+                Мои <span class="gradient-text">площадки</span>
+            </h2>
+                        
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- TikTok -->
+                <a href="https://www.tiktok.com/@floyfozeddnet?_t=ZP-8zakWQawdYM&_r=1" target="_blank" class="bg-cardDark backdrop-blur-sm rounded-xl p-6 card-hover border border-gray-700 hover:border-pink-500 transition-all group">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-pink-500/20 rounded-lg flex items-center justify-center mr-4">
+                            <i class="fab fa-tiktok text-xl text-pink-500"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold group-hover:text-pink-400 transition-colors">TikTok</h3>
+                            <p class="text-gray-300">@floyfozeddnet</p>
+                        </div>
+                    </div>
+                </a>
+                                
+                <!-- FunPay -->
+                <a href="https://funpay.com/users/14323509/" target="_blank" class="bg-cardDark backdrop-blur-sm rounded-xl p-6 card-hover border border-gray-700 hover:border-orange-500 transition-all group">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center mr-4">
+                            <i class="fas fa-coins text-xl text-orange-500"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold group-hover:text-orange-400 transition-colors">FunPay</h3>
+                            <p class="text-gray-300">Профиль продавца</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section py-20 px-4 md:px-8">
+        <div class="container mx-auto max-w-4xl">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-16">
+                <span class="gradient-text">Контакты</span>
+            </h2>
+                        
+            <div class="bg-cardDark backdrop-blur-sm rounded-2xl p-8 border border-gray-700">
+                <div class="text-center mb-8">
+                    <div class="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fab fa-telegram text-3xl text-primary"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-2">Telegram</h3>
+                    <p class="mb-4 text-gray-300">Единственный контакт для связи</p>
+                    <a href="https://t.me/Heactiven" target="_blank" class="inline-flex items-center px-6 py-3 bg-primary rounded-lg font-medium hover:bg-primary/90 transition-colors">
+                        <i class="fab fa-telegram mr-2"></i>
+                        @Heactiven
+                    </a>
+                </div>
+                                
+                <div class="border-t border-gray-700 pt-8 mt-8">
+                    <h3 class="text-xl font-semibold text-center mb-6">Быстрая связь</h3>
+                    <div class="flex justify-center space-x-4">
+                        <a href="#" class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center hover:bg-primary/30 transition-colors">
+                            <i class="fab fa-telegram text-primary"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center hover:bg-blue-500/30 transition-colors">
+                            <i class="fas fa-store text-blue-500"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-pink-500/20 rounded-full flex items-center justify-center hover:bg-pink-500/30 transition-colors">
+                            <i class="fab fa-tiktok text-pink-500"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-4 md:px-8 border-t border-gray-800">
+        <div class="container mx-auto max-w-6xl text-center">
+            <p class="text-gray-400 mb-4">© 2025 Heactiven. Все права защищены.</p>
+            <p class="text-gray-500 text-sm mb-4">Дизайн и создание аватарок</p>
+            
+            <!-- Visitor Counter -->
+            <div class="counter-container mt-4">
+                <i class="fas fa-users text-primary"></i>
+                <span>Всего посетителей: <span id="visitorCount" class="counter-number">0</span></span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="fixed bottom-6 right-6 w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white shadow-lg hover:bg-secondary transition-colors opacity-0 invisible transition-all">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Create static stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starCount = 300;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                const size = Math.random() * 3;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${posX}%`;
+                star.style.top = `${posY}%`;
+                
+                // Add slight glow to some stars
+                if (Math.random() > 0.7) {
+                    star.style.boxShadow = '0 0 4px 1px rgba(255, 255, 255, 0.5)';
+                }
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Visitor counter functionality
+        function updateVisitorCounter() {
+            // Check if visitor already counted in this session
+            if (!sessionStorage.getItem('visited')) {
+                let count = localStorage.getItem('visitorCount') || 0;
+                count = parseInt(count) + 1;
+                localStorage.setItem('visitorCount', count);
+                sessionStorage.setItem('visited', 'true');
+                
+                // Animate counter
+                animateCounter('visitorCount', count);
+            } else {
+                // Just display the current count
+                const count = localStorage.getItem('visitorCount') || 0;
+                document.getElementById('visitorCount').textContent = count;
+            }
+        }
+        
+        // Animate counter with rolling numbers effect
+        function animateCounter(elementId, targetNumber) {
+            const element = document.getElementById(elementId);
+            const duration = 2000; // animation duration in ms
+            const frameDuration = 1000 / 60; // 60fps
+            const totalFrames = Math.round(duration / frameDuration);
+            let frame = 0;
+            
+            const initialNumber = parseInt(element.textContent) || 0;
+            
+            const counter = setInterval(() => {
+                frame++;
+                
+                // Calculate current number with easing function
+                const progress = frame / totalFrames;
+                const easeOut = progress * (2 - progress); // easeOutQuad
+                const currentNumber = Math.round(initialNumber + (targetNumber - initialNumber) * easeOut);
+                
+                element.textContent = currentNumber.toLocaleString();
+                
+                if (frame === totalFrames) {
+                    clearInterval(counter);
+                }
+            }, frameDuration);
+        }
+        
+        // Back to top button
+        const backToTopButton = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopButton.classList.remove('opacity-0', 'invisible');
+                backToTopButton.classList.add('opacity-100', 'visible');
+            } else {
+                backToTopButton.classList.remove('opacity-100', 'visible');
+                backToTopButton.classList.add('opacity-0', 'invisible');
+            }
+        });
+        
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            if (anchor.getAttribute('href') !== '#') {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            }
+        });
+        
+        // Theme switching functionality
+        const themeButtons = document.querySelectorAll('.theme-btn');
+        const body = document.body;
+        
+        // Load saved theme from localStorage
+        const savedTheme = localStorage.getItem('theme') || 'oled';
+        body.setAttribute('data-theme', savedTheme);
+        
+        // Set active button
+        themeButtons.forEach(btn => {
+            if (btn.dataset.theme === savedTheme) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+        
+        // Add event listeners to theme buttons
+        themeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const theme = btn.dataset.theme;
+                                
+                // Update theme
+                body.setAttribute('data-theme', theme);
+                                
+                // Update active button
+                themeButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                                
+                // Save to localStorage
+                localStorage.setItem('theme', theme);
+            });
+        });
+        
+        // Navigation dots functionality
+        const sections = document.querySelectorAll('.section');
+        const dots = document.querySelectorAll('.dot');
+        
+        function updateActiveDot() {
+            const scrollPosition = window.scrollY + 100;
+            
+            sections.forEach((section, index) => {
+                const sectionTop = section.offsetTop;
+                const sectionBottom = sectionTop + section.offsetHeight;
+                
+                if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+                    dots.forEach(dot => dot.classList.remove('active'));
+                    dots[index].classList.add('active');
+                }
+            });
+        }
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            updateVisitorCounter();
+            
+            // Add event listener for scroll
+            window.addEventListener('scroll', updateActiveDot);
+            
+            // Also add click events to dots for navigation
+            dots.forEach(dot => {
+                dot.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetSection = document.querySelector(`#${dot.dataset.section}`);
+                    if (targetSection) {
+                        targetSection.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Initial update
+            updateActiveDot();
+        });
+    </script>
+</body>
+</html>
